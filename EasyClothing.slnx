@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="EasyClothing.Api/EasyClothing.Api.csproj" />
+  <Project Path="EasyClothing.App/EasyClothing.App.csproj" />
+  <Project Path="EasyClothing.Domain/EasyClothing.Domain.csproj" />
+  <Project Path="EasyClothing.Infra/EasyClothing.Infra.csproj" />
+</Solution>
