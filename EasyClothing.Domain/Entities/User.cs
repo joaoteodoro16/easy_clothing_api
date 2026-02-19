@@ -1,4 +1,5 @@
 ﻿using EasyClothing.Domain.Common;
+using EasyClothing.Domain.enums;
 using EasyClothing.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -11,33 +12,59 @@ namespace EasyClothing.Domain.Entities
         public string Name { get; private set; } = string.Empty;
         public Email Email { get; private set; } 
         public string Password { get; private set; }
-        public Cep Cep { get; private set; }
-        public string Street { get; private set; } = string.Empty;
-        public string City { get; private set; } = string.Empty;
-        public string State { get; private set; } = string.Empty;
-        public string Country { get; private set; } = string.Empty;
+        public Cep? Cep { get; private set; }
+        public string? Street { get; private set; } = string.Empty;
+        public string? City { get; private set; } = string.Empty;
+        public string? State { get; private set; } = string.Empty;
+        public string? Country { get; private set; } = string.Empty;
         public string? Complement { get; private set; } = string.Empty;
-        public Cpf Cpf { get; private set; }
-        public CellPhone CellPhone { get; private set; }
+        public Cpf? Cpf { get; private set; }
+        public CellPhone? CellPhone { get; private set; }
+        public UserRole Role { get; private set; }
 
         public User()
         {
             
         }
 
-        public User(string name, string email, string password, string cep, string street, string city, string state, string country, string? complement, string cpf, string cellPhone)
+        public static User CreateCustomer(
+            string name,
+            Email email,
+            string password,
+            Cpf cpf,
+            CellPhone phone,
+            Cep cep,
+            string street,
+            string city,
+            string state,
+            string country, string complement)
         {
-            this.Name = name;
-            this.Email = email;
-            this.Password = password;
-            this.Cep = cep;
-            this.Street = street;
-            this.City = city;
-            this.State = state;
-            this.Country = country;
-            this.Complement = complement;
-            this.Cpf = cpf;
-            this.CellPhone = cellPhone;
+            return new User
+            {
+                Name = name,
+                Email = email,
+                Password = password,
+                Role = UserRole.Customer,
+                Cpf = cpf,
+                CellPhone = phone,
+                Cep = cep,
+                Street = street,
+                City = city,
+                State = state,
+                Country = country,
+                Complement = complement
+            };
+        }
+
+        public static User CreateAdmin(string name, Email email, string password)
+        {
+            return new User
+            {
+                Name = name,
+                Email = email,
+                Password = password,
+                Role = UserRole.Admin
+            };
         }
     }
 }
