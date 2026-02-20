@@ -20,5 +20,7 @@ namespace EasyClothing.App.DTOs.User
         public string? Country { get; init; }
         public string? Complement { get; init; }
         public UserRole Role { get; init; }
+        public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

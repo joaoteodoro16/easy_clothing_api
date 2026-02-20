@@ -6,6 +6,7 @@ using EasyClothing.App.Usecases.Features.User.Commands.Login;
 using EasyClothing.App.Usecases.Features.User.Commands.SignUp;
 using EasyClothing.App.Usecases.Features.User.Commands.SignUp.Admin;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,12 +24,14 @@ namespace EasyClothing.Api.Controllers
             this._mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<ApiResponse<Guid>>> CreateConsumer([FromBody] ConsumerSignUpCommand command) {
             var result = await _mediator.Send(command);
             return this.ToActionResult(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("admin")]
         public async Task<ActionResult<ApiResponse<Guid>>> CreateAdmin([FromBody] AdminSignUpCommand command)
         {
@@ -36,12 +39,12 @@ namespace EasyClothing.Api.Controllers
             return this.ToActionResult(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<ApiResponse<UserLoginResponseDto>>> Login([FromBody] UserLoginQuery query)
         {
             var result = await _mediator.Send(query);
             return this.ToActionResult(result);
         }
-
     }
 }

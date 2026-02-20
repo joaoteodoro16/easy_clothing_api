@@ -20,6 +20,11 @@ namespace EasyClothing.App.Common
             public const string UsuarioAutenticado = "Login efetuado com sucesso!";
         }
 
+        public static class Token
+        {
+            public const string RefreshTokenInvalido = "Você não tem autorização para esse recurso";
+        }
+
 
         //public static class Auth
         //{

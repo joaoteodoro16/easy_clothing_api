@@ -2,38 +2,83 @@
 using EasyClothing.App.Common;
 using EasyClothing.App.DTOs.User;
 using EasyClothing.App.Services.Interfaces;
+using EasyClothing.Domain.Entities;
 using EasyClothing.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EasyClothing.App.Usecases.Features.User.Commands.Login
 {
-    public class UserLoginQueryHandler : IRequestHandler<UserLoginQuery, Result<UserLoginResponseDto>>
+    public class UserLoginQueryHandler
+        : IRequestHandler<UserLoginQuery, Result<UserLoginResponseDto>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IMapper _mapper;
-        public UserLoginQueryHandler(IUserRepository userRepository, IPasswordHasher passwordHasher, IMapper mapper)
+        private readonly ITokenService _tokenService;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+
+        public UserLoginQueryHandler(
+            IUserRepository userRepository,
+            IPasswordHasher passwordHasher,
+            IMapper mapper,
+            ITokenService tokenService,
+            IRefreshTokenRepository refreshTokenRepository)
         {
-            this._userRepository = userRepository;
-            this._passwordHasher = passwordHasher;
-            this._mapper = mapper;
+            _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
+            _mapper = mapper;
+            _tokenService = tokenService;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
-        public async Task<Result<UserLoginResponseDto>> Handle(UserLoginQuery request, CancellationToken cancellationToken)
+        public async Task<Result<UserLoginResponseDto>> Handle(
+            UserLoginQuery request,
+            CancellationToken cancellationToken)
         {
-            var userExist = await _userRepository.GetUserByEmail(request.Email);
-            if(userExist == null) return Result<UserLoginResponseDto>.Failure(new Error(ErrorCode.Unauthorized, Messages.User.EmailOuSenhaInvalidos));
+            var userExist =
+                await _userRepository.GetUserByEmail(request.Email);
 
-            var passwordValid = _passwordHasher.Verify(request.Password, userExist.Password);
+            if (userExist == null)
+                return Result<UserLoginResponseDto>.Failure(
+                    new Error(
+                        ErrorCode.Unauthorized,
+                        Messages.User.EmailOuSenhaInvalidos));
 
-            if (!passwordValid) return Result<UserLoginResponseDto>.Failure(new Error(ErrorCode.Unauthorized, Messages.User.EmailOuSenhaInvalidos));
 
-            var response = _mapper.Map<UserLoginResponseDto>(userExist);
+            var passwordValid =
+                _passwordHasher.Verify(
+                    request.Password,
+                    userExist.Password);
 
-            return Result<UserLoginResponseDto>.Success(response, Messages.User.UsuarioAutenticado);
+            if (!passwordValid)
+                return Result<UserLoginResponseDto>.Failure(
+                    new Error(
+                        ErrorCode.Unauthorized,
+                        Messages.User.EmailOuSenhaInvalidos));
+
+            var response =
+                _mapper.Map<UserLoginResponseDto>(userExist);
+
+            var accessToken =
+                _tokenService.GenerateToken(userExist);
+
+            var refreshToken =
+                _tokenService.GenerateRefreshToken();
+            var refreshTokenEntity =
+                RefreshToken.Create(
+                    userExist.Id,
+                    refreshToken
+                    );
+
+            await _refreshTokenRepository.AddAsync(refreshTokenEntity);
+            await _refreshTokenRepository.SaveChangesAsync();
+
+            response.AccessToken = accessToken;
+            response.RefreshToken = refreshToken;
+
+            return Result<UserLoginResponseDto>.Success(
+                response,
+                Messages.User.UsuarioAutenticado);
         }
     }
 }

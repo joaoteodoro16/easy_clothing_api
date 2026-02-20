@@ -1,12 +1,15 @@
 ﻿using EasyClothing.App;
 using EasyClothing.App.Common.Behaviors;
+using EasyClothing.App.Services;
 using EasyClothing.App.Services.Interfaces;
 using EasyClothing.Domain.Repositories;
 using EasyClothing.Infra.Persistence;
 using EasyClothing.Infra.Repositories;
 using EasyClothing.Infra.Services.Secutiry;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -18,11 +21,20 @@ namespace OChefia.Api.Configuration
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
+
             services.AddEndpointsApiExplorer();
             services.AddOpenApi();
 
-            //services.AddJwtAuthentication(configuration);
+            services.AddJwtAuthentication(configuration);
+
             services.AddDatabase(configuration);
 
             services.AddApplication();
@@ -63,10 +75,12 @@ namespace OChefia.Api.Configuration
         {
             //// Segurança
             services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
-            //services.AddScoped<ITokenService, JwtTokenService>();
+            services.AddScoped<ITokenService, JwtTokenService>();
 
             //// Repositórios
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            
             //services.AddScoped<IEmpresaRepository, EmpresaRepository>();
             //services.AddScoped<ILojaRepository, LojaRepository>();
             //services.AddScoped<IProdutoRepository, ProdutoRepository>();
