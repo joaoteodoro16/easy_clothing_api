@@ -37,7 +37,7 @@ namespace EasyClothing.Domain.Entities
             string street,
             string city,
             string state,
-            string country, string complement)
+            string country, string? complement)
         {
             return new User
             {

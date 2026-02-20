@@ -1,6 +1,8 @@
 ﻿using EasyClothing.App;
 using EasyClothing.App.Common.Behaviors;
+using EasyClothing.Domain.Repositories;
 using EasyClothing.Infra.Persistence;
+using EasyClothing.Infra.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -61,7 +63,7 @@ namespace OChefia.Api.Configuration
             //services.AddScoped<ITokenService, JwtTokenService>();
 
             //// Repositórios
-            //services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             //services.AddScoped<IEmpresaRepository, EmpresaRepository>();
             //services.AddScoped<ILojaRepository, LojaRepository>();
             //services.AddScoped<IProdutoRepository, ProdutoRepository>();

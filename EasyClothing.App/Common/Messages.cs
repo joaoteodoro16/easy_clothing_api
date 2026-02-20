@@ -12,6 +12,14 @@ namespace EasyClothing.App.Common
             public const string OcorreuErroInesperado = "Ocorreu um erro inesperado";
         }
 
+        public static class User
+        {
+            public const string UsuarioCadastrado = "Usuário cadastrado com sucesso!";
+            public const string UsuarioNaoEncontrado = "Esse usuário não existe!";
+            public const string EmailJaVinculadoConta = "Já existe uma conta vinculada a esse email";
+        }
+
+
         //public static class Auth
         //{
         //    public const string CredenciaisInvalidas = "Email ou senha inválidos!";

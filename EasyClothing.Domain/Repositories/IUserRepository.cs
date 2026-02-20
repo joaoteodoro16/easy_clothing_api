@@ -7,6 +7,6 @@ namespace EasyClothing.Domain.Repositories
 {
     public interface IUserRepository : IRepository<User>
     {
-
+        Task<User?> GetUserByEmail(string email, CancellationToken cancellationToken = default);
     }
 }
