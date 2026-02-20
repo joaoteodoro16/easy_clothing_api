@@ -24,6 +24,7 @@ namespace EasyClothing.Api.Controllers
             this._mediator = mediator;
         }
 
+        //[Authorize(Roles = "Admin")] Pra quando eu for inserir roles nos tokens
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<ApiResponse<Guid>>> CreateConsumer([FromBody] ConsumerSignUpCommand command) {
