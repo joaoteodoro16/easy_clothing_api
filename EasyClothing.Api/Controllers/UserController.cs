@@ -1,6 +1,8 @@
 ﻿using Azure;
 using EasyClothing.Api.Http.Extensions;
 using EasyClothing.Api.Http.Responses;
+using EasyClothing.App.DTOs.User;
+using EasyClothing.App.Usecases.Features.User.Commands.Login;
 using EasyClothing.App.Usecases.Features.User.Commands.SignUp;
 using EasyClothing.App.Usecases.Features.User.Commands.SignUp.Admin;
 using MediatR;
@@ -34,7 +36,12 @@ namespace EasyClothing.Api.Controllers
             return this.ToActionResult(result);
         }
 
-
+        [HttpPost("login")]
+        public async Task<ActionResult<ApiResponse<UserLoginResponseDto>>> Login([FromBody] UserLoginQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return this.ToActionResult(result);
+        }
 
     }
 }

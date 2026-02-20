@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EasyClothing.App.DTOs.User;
 using EasyClothing.App.Usecases.Features.User.Commands.SignUp;
 using EasyClothing.App.Usecases.Features.User.Commands.SignUp.Admin;
 using EasyClothing.Domain.Entities;
@@ -22,6 +23,7 @@ namespace EasyClothing.App.Profiles
                     C.Name, C.Email, C.Password
                     ));
 
+            CreateMap<User, UserLoginResponseDto>();
         }
     }
 }

@@ -16,8 +16,4 @@
     <ProjectReference Include="..\EasyClothing.Domain\EasyClothing.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\User\" />
-  </ItemGroup>
-
 </Project>

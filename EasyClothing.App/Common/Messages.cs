@@ -15,8 +15,9 @@ namespace EasyClothing.App.Common
         public static class User
         {
             public const string UsuarioCadastrado = "Usuário cadastrado com sucesso!";
-            public const string UsuarioNaoEncontrado = "Esse usuário não existe!";
+            public const string EmailOuSenhaInvalidos = "Email ou senha inválidos!";
             public const string EmailJaVinculadoConta = "Já existe uma conta vinculada a esse email";
+            public const string UsuarioAutenticado = "Login efetuado com sucesso!";
         }
 
 
