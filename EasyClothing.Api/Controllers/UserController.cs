@@ -25,6 +25,7 @@ namespace EasyClothing.Api.Controllers
         }
 
         //[Authorize(Roles = "Admin")] Pra quando eu for inserir roles nos tokens
+        //[Authorize(Policy = "AdminPolicy")] 
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<ApiResponse<Guid>>> CreateConsumer([FromBody] ConsumerSignUpCommand command) {
