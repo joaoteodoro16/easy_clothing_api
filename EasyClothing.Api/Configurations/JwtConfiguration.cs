@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -12,39 +13,40 @@ namespace OChefia.Api.Configuration
         {
             var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
 
+            // Configuração da autenticação JWT
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme =
-                    JwtBearerDefaults.AuthenticationScheme;
-
-                options.DefaultChallengeScheme =
-                    JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = false;
-
                 options.SaveToken = true;
-
-                options.TokenValidationParameters =
-                    new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-
-                        ValidateIssuerSigningKey = true,
-
-                        ValidIssuer = configuration["Jwt:Issuer"],
-
-                        ValidAudience = configuration["Jwt:Audience"],
-
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(key)
-                    };
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidAudience = configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
             });
 
-            services.AddAuthorization();
+            // Configuração das policies de autorização
+            services.AddAuthorization(options =>
+            {
+                // Todos os endpoints exigem autenticação por padrão
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                // Policy específica para usuários admin
+                options.AddPolicy("AdminPolicy", policy =>
+                    policy.RequireRole("Admin"));
+            });
 
             return services;
         }
