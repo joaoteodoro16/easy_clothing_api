@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EasyClothing.App.Common;
+using EasyClothing.App.Services.Interfaces;
 using EasyClothing.Domain.Repositories;
 using MediatR;
 using System;
@@ -7,25 +8,31 @@ using System.Collections.Generic;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 
-namespace EasyClothing.App.Usecases.Features.User.Commands.SignUp
+namespace EasyClothing.App.Usecases.Features.User.Commands.SignUp.Consumer
 {
     public class ConsumerSignUpCommandHandler : IRequestHandler<ConsumerSignUpCommand, Result<Guid>>
     {
         private readonly IUserRepository _userRepository;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public ConsumerSignUpCommandHandler(IUserRepository userRepository, IMapper mapper)
+        public ConsumerSignUpCommandHandler(IUserRepository userRepository, IMapper mapper, IPasswordHasher passwordHasher)
         {
             this._userRepository = userRepository;
             this._mapper = mapper;
+            this._passwordHasher= passwordHasher;
         }
 
         public async Task<Result<Guid>> Handle(ConsumerSignUpCommand request, CancellationToken cancellationToken)
         {
             var userExists = await _userRepository.GetUserByEmail(request.Email);
             if(userExists != null) return Result<Guid>.Failure(new Error(ErrorCode.Conflict, Messages.User.EmailJaVinculadoConta));
+            
+            var hashedPassword = _passwordHasher.Hash(request.Password);
 
             var entity = _mapper.Map<Domain.Entities.User>(request);
+            entity.SetPassword(hashedPassword);
+
             var result = await _userRepository.AddAsync(entity);
 
             return Result<Guid>.Success(result.Id, Messages.User.UsuarioCadastrado);

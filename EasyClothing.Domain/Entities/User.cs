@@ -66,5 +66,11 @@ namespace EasyClothing.Domain.Entities
                 Role = UserRole.Admin
             };
         }
+
+        public void SetPassword (string newPassword)
+        {
+            this.Password = newPassword;
+        }
+
     }
 }

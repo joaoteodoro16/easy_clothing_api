@@ -1,9 +1,12 @@
 ﻿using EasyClothing.App;
 using EasyClothing.App.Common.Behaviors;
+using EasyClothing.App.Services.Interfaces;
 using EasyClothing.Domain.Repositories;
 using EasyClothing.Infra.Persistence;
 using EasyClothing.Infra.Repositories;
+using EasyClothing.Infra.Services.Secutiry;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -59,7 +62,7 @@ namespace OChefia.Api.Configuration
             this IServiceCollection services)
         {
             //// Segurança
-            //services.AddScoped<ISenhaHasher, BCryptSenhaHasher>();
+            services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
             //services.AddScoped<ITokenService, JwtTokenService>();
 
             //// Repositórios

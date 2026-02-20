@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EasyClothing.App.Usecases.Features.User.Commands.SignUp;
+using EasyClothing.App.Usecases.Features.User.Commands.SignUp.Admin;
 using EasyClothing.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,12 @@ namespace EasyClothing.App.Profiles
                 .ConstructUsing(C => User.CreateCustomer(
                     C.Name, C.Email, C.Password,C.Cpf, C.Phone,C.Cep,C.Street,C.City,C.State,C.Country, C.Complement
                     ));
+
+            CreateMap<AdminSignUpCommand, User>()
+                .ConstructUsing(C => User.CreateAdmin(
+                    C.Name, C.Email, C.Password
+                    ));
+
         }
     }
 }
